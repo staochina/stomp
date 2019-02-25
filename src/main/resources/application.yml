@@ -1,13 +1,25 @@
+#服务
 server:
+    #端口号
     port: 80
+#日志配置
 logging:
+    #日志输出文件
     file: "./logs/server.log"
+    #级别
     level:
-        hello: DEBUG
-
+        com: DEBUG
+#数据库配置
 spring:
     datasource:
         driver-class-name: oracle.jdbc.OracleDriver
         url: jdbc:oracle:thin:@192.168.1.3:1521:orcl
         username: semirfair_18s1s2
         password: tgbyhn624
+#用户验证
+auth:
+    #超时 毫秒级
+    timeOut: 6000
+    jwt:
+        #密钥
+        signKey: lifecycle

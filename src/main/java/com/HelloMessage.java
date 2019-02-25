@@ -1,4 +1,4 @@
-package hello;
+package com;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,18 +25,18 @@ public class HelloMessage {
     }
 
     public HelloMessage(int uid, String name) {
-        logger.debug("³õÊ¼»¯ HelloMessage class");
+        logger.debug("åˆå§‹åŒ– HelloMessage class");
         this.uid = uid;
         this.name = name;
     }
 
     public String getName() {
-        logger.debug("»ñÈ¡ name");
+        logger.debug("è·å– name");
         return name;
     }
 
     public void setName(String name) {
-        logger.debug("×é×° name");
+        logger.debug("ç»„è£… name");
         this.name = name;
     }
 }

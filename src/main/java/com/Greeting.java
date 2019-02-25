@@ -1,4 +1,4 @@
-package hello;
+package com;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +16,10 @@ public class Greeting {
     }
 
     public Greeting(String content) {
-        logger.debug("初始化 Greeting");
         this.content = content;
     }
 
     public String getContent() {
-        logger.debug("初始化 content");
         return content;
     }
 }
