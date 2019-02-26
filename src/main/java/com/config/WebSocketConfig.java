@@ -1,4 +1,4 @@
-package com;
+package com.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,5 +26,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         logger.debug("registerStompEndpoints()");
         registry.addEndpoint("/gs-guide-websocket").setAllowedOrigins("*").withSockJS();
     }
+
+
 
 }

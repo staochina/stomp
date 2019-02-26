@@ -20,7 +20,7 @@ public class GreetingController {
 
     @MessageMapping("/com/{uid}")
     //@SendTo("/topic/greetings")
-    public void greeting( HelloMessage message) throws Exception {
+    public void greeting( HelloMessage message,) throws Exception {
         logger.debug(" uid: "+message.getUid());
         Thread.sleep(2000); // simulated delay
         logger.debug("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
