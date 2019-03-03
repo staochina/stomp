@@ -1,4 +1,4 @@
-package com.auth;
+package lifecycle.model;
 
 /**
  * Desc:定义消息结构
@@ -9,6 +9,8 @@ public class Message {
     public final static String TYPE_OF_SYSTEM="SYSTEM";
     public final static String TYPE_OF_USER ="USER";
 
+    //消息标识符，用于标识
+    private String ak;
     //消息id
     private int id;
     //消息
@@ -19,6 +21,14 @@ public class Message {
     private int senderId;
     //接收者
     private int receiverId;
+
+    public String getAk() {
+        return ak;
+    }
+
+    public void setAk(String ak) {
+        this.ak = ak;
+    }
 
     public int getId() {
         return id;

@@ -4,10 +4,15 @@ function rnd(n, m){
     }
 
 var stompClient = null;
-var uid = rnd(1,2);
- var t = setTimeout(function(){
+/**
+ 设置用户信息
+ */
+var uid = rnd(1,3);
+var name = 'user_'+uid;
+
+var t = setTimeout(function(){
    console.info($("#uid").html());
-   $("#uid").append(uid);
+   $("#uid").append("<h2>" + uid +"</h2>");
  },500)
 
 function setConnected(connected) {
@@ -23,13 +28,20 @@ function setConnected(connected) {
 }
 
 function connect() {
-    var socket = new SockJS('/gs-guide-websocket');
+    var socket = new SockJS('/message-service');
     stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
+    var headers ={'uid':uid,'name':name};
+    stompClient.connect(headers, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        console.info('subscribe url : /topic/greetings/'+uid);
-        stompClient.subscribe('/topic/greetings/'+uid, function (greeting) {
+        var publicChannel ="/topic/public";
+        stompClient.subscribe('/topic/public', function (greeting) {
+            console.info('subscribe url :'+publicChannel);
+            showGreeting(JSON.parse(greeting.body).content);
+        });
+        var userChannel ='/user/'+ uid +'/topic';
+        stompClient.subscribe(userChannel, function (greeting) {
+            console.info('subscribe url :'+userChannel);
             showGreeting(JSON.parse(greeting.body).content);
         });
     });
@@ -43,8 +55,18 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-function sendName() {
-    stompClient.send("/app/hello/"+uid, {}, JSON.stringify({'name': $("#name").val(),'uid':uid}));
+function getContent(){
+   return $("#content").val();
+}
+
+function sendMsg() {
+    var ak = new Date().getTime() +"";
+    stompClient.send("/app/sendMsg", {} , JSON.stringify({'ak':ak,'senderId': uid,'content': getContent() }) );
+}
+
+function sendUser() {
+    var ak = new Date().getTime() +"";
+    stompClient.send("/app/sendMsg", {} , JSON.stringify({'ak':ak,'senderId': uid,'receiverId': 3 - uid , 'content':getContent() }) );
 }
 
 function showGreeting(message) {
@@ -57,5 +79,6 @@ $(function () {
     });
     $( "#connect" ).click(function() { connect(); });
     $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName(); });
+    $( "#send" ).click(function() { sendMsg(); });
+    $( "#sendUser" ).click(function() { sendUser(); });
 });

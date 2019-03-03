@@ -1,4 +1,4 @@
-package com.auth;
+package lifecycle.auth;
 
 /**
  * Desc:

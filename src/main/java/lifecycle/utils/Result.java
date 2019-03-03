@@ -1,4 +1,4 @@
-package com.utils;
+package lifecycle.utils;
 
 import org.json.JSONObject;
 

@@ -1,4 +1,4 @@
-package com.utils;
+package lifecycle.utils;
 
 import org.json.JSONObject;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,14 +14,14 @@ import java.sql.SQLException;
  */
 @Component
 public class JSONObjectRowMapper implements RowMapper<JSONObject> {
-    //ºöÂÔ´óĞ¡Ğ´,ÈôÎª false , Ôò¸ù¾İ²éÑ¯Çé¿öÈ·¶¨×Ö¶Î´óĞ¡Ğ´
+    //å¿½ç•¥å¤§å°å†™,è‹¥ä¸º false , åˆ™æ ¹æ®æŸ¥è¯¢æƒ…å†µç¡®å®šå­—æ®µå¤§å°å†™
     private boolean ignoreUpperLowCase = false;
-    //×Ö¶ÎÃû³ÆÊä³öÊ±£¬ÊÇ·ñ×ª³É´óĞ´£¬Ä¬ÈÏÎª false
+    //å­—æ®µåç§°è¾“å‡ºæ—¶ï¼Œæ˜¯å¦è½¬æˆå¤§å†™ï¼Œé»˜è®¤ä¸º false
     private boolean upperCase = false;
 
     /**
-     * ÎŞ²Î¹¹Ôìº¯Êı
-     * ½«»áÊ¹ÓÃÄ¬ÈÏÅäÖÃ
+     * æ— å‚æ„é€ å‡½æ•°
+     * å°†ä¼šä½¿ç”¨é»˜è®¤é…ç½®
      */
     public JSONObjectRowMapper(){
         super();
@@ -29,8 +29,8 @@ public class JSONObjectRowMapper implements RowMapper<JSONObject> {
 
     /**
      * desc:
-     * @param ignoreUpperLowCase ÊÇ·ñºöÂÔ´óĞ¡Ğ´
-     * @param upperCase ÊÇ·ñÇ¿ÖÆ×ª»»Îª´óĞ´
+     * @param ignoreUpperLowCase æ˜¯å¦å¿½ç•¥å¤§å°å†™
+     * @param upperCase æ˜¯å¦å¼ºåˆ¶è½¬æ¢ä¸ºå¤§å†™
      */
     public JSONObjectRowMapper(boolean ignoreUpperLowCase, boolean upperCase){
         super();
@@ -40,15 +40,15 @@ public class JSONObjectRowMapper implements RowMapper<JSONObject> {
 
     @Override
     public JSONObject mapRow(ResultSet rs, int rowNum) throws SQLException {
-        //»ñÈ¡ÔªÊı¾İ¶ÔÏó
+        //è·å–å…ƒæ•°æ®å¯¹è±¡
         ResultSetMetaData meta = rs.getMetaData();
         int columnCount = meta.getColumnCount();
         JSONObject json = new JSONObject();
-        //¸ù¾İÔªÊı¾İ¶ÔÏó½øĞĞ½âÎö½á¹û
+        //æ ¹æ®å…ƒæ•°æ®å¯¹è±¡è¿›è¡Œè§£æç»“æœ
         Object objValue;
         for(int i =1 ;i<=columnCount ;i++){
             objValue = rs.getObject(i);
-            //»ñÈ¡ÔªÊı¾İÃû³Æ
+            //è·å–å…ƒæ•°æ®åç§°
             String name;
             if(this.ignoreUpperLowCase) {
                 name=meta.getColumnName(i);
