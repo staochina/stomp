@@ -13,6 +13,8 @@ import java.util.Map;
 /**
  * Desc:
  * Created by sun.tao on 2019/2/28
+ * @author sun.tao
+ * @date 2019/2/28
  */
 public class HandleShakeInterceptors implements HandshakeInterceptor {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
@@ -28,6 +30,7 @@ public class HandleShakeInterceptors implements HandshakeInterceptor {
      * @return
      * @throws Exception
      */
+    @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                    WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
         Map<String, String[]> params = ((ServletServerHttpRequest) request).getServletRequest().getParameterMap();
@@ -46,6 +49,7 @@ public class HandleShakeInterceptors implements HandshakeInterceptor {
      * @param wsHandler
      * @param exception
      */
+    @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                WebSocketHandler wsHandler, Exception exception) {
         logger.debug("===================  HandleShakeInterceptors after");

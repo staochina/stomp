@@ -1,7 +1,6 @@
 package lifecycle.config;
 
 import lifecycle.Interceptor.HandleShakeInterceptors;
-import lifecycle.Interceptor.HttpSessionIdHandshakeInterceptor;
 import lifecycle.Interceptor.PresenceChannelInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         /**
          * "/message-service"被注册为STOMP端点，对外暴露，客户端通过该路径接入WebSocket服务
          */
-        logger.debug("---注册端点......");
+        logger.debug("---注册端点123456 ......");
         registry.addEndpoint("/message-service").setAllowedOrigins("*")
                 .withSockJS().setInterceptors(new HandleShakeInterceptors());
         /*registry.addEndpoint("/message-service").setAllowedOrigins("*")
@@ -34,7 +33,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 addInterceptors(new HandleShakeInterceptors()).withSockJS();*/
     }
 
-    /*
+    /**
      * 配置消息代理
      * 用户可以订阅来自"/topic"和"/user"的消息，
      * 在Controller中，可通过@SendTo注解指明发送目标，这样服务器就可以将消息发送到订阅相关消息的客户端

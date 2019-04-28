@@ -1,5 +1,7 @@
 package lifecycle.auth;
 
+import org.json.JSONObject;
+
 import java.security.Principal;
 
 /**
@@ -28,5 +30,12 @@ public class PortalPrincipal implements Principal {
     public int getUid(){
         return uid;
     };
+
+    public JSONObject toJSON(){
+        JSONObject obj = new JSONObject();
+        obj.put("uid",this.uid);
+        obj.put("name",this.name);
+        return obj;
+    }
 
 }

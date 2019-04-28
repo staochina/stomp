@@ -20,6 +20,6 @@ public class StompSubscribeEventListener implements ApplicationListener<SessionS
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(sessionSubscribeEvent.getMessage());
         //这里的sessionId对应HttpSessionIdHandshakeInterceptor拦截器的存放key
         // String sessionId = headerAccessor.getSessionAttributes().get(Constants.SESSIONID).toString();
-        logger.info("----stomp Subscribe : " + headerAccessor.getMessageHeaders());
+        logger.info("----stomp onApplicationEvent : " + headerAccessor.getMessageHeaders());
     }
 }

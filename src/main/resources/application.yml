@@ -1,7 +1,7 @@
 #服务
 server:
     #端口号
-    port: 80
+    port: 8080
 #日志配置
 logging:
     #日志输出文件

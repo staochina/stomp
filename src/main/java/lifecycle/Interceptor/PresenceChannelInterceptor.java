@@ -28,13 +28,13 @@ public class PresenceChannelInterceptor implements ChannelInterceptor {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         //1. 判断是否首次连接请求
         StompCommand command = accessor.getCommand();
+        PortalPrincipal user =null;
         switch (command) {
             case CONNECT:
                 logger.debug(" ---  CONNECT ");
                 //2. 验证是否登录
                 //String portalToken = accessor.getNativeHeader("portalToken").get(0);
                 //请求portal，验证tocken，并返回 用户相关信息
-
                 String uidStr = accessor.getFirstNativeHeader("uid");
                 String name = accessor.getFirstNativeHeader("name");
                 logger.debug("--------- uidStr :" + uidStr);
@@ -44,45 +44,69 @@ public class PresenceChannelInterceptor implements ChannelInterceptor {
                     logger.debug("------- user 3 ...");
                     return null;
                 }
-                Principal user = new PortalPrincipal(uid, name);
+                user = new PortalPrincipal(uid, name);
                 accessor.setUser(user);
-                logger.debug(" ----  设置 user 对象 :" + user.toString());
+                logger.debug(" ----  设置 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case SUBSCRIBE:
-                logger.debug(" ----  subscribe  ");
+                logger.debug(" ----  SUBSCRIBE  ");
+                user =(PortalPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case UNSUBSCRIBE:
-                logger.debug(" ----  unsubscribe  ");
+                logger.debug(" ----  UNSUBSCRIBE  ");
+                user =(PortalPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case DISCONNECT:
-                logger.debug(" ----  disconnect ");
+                logger.debug(" ----  DISCONNECT ");
+                user =(PortalPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case ABORT:
-                logger.debug(" ----  abort ");
+                logger.debug(" ----  ABORT ");
+                user =(PortalPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case ACK:
                 logger.debug(" ----  ACK ");
+                user =(PortalPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case NACK:
-                logger.debug(" ----  ACK ");
+                logger.debug(" ----  NACK ");
+                user =(PortalPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case SEND:
-                logger.debug(" ----  ACK ");
+                logger.debug(" ----  SEND ");
+                user =(PortalPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case BEGIN:
                 logger.debug(" ----  BEGIN ");
+                user =(PortalPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case ERROR:
                 logger.debug(" ----  ERROR ");
+                user =(PortalPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case STOMP:
                 logger.debug(" ----  STOMP ");
+                user =(PortalPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case MESSAGE:
                 logger.debug(" ----  MESSAGE ");
+                user =(PortalPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case COMMIT:
                 logger.debug(" ----  COMMIT ");
+                user =(PortalPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             default:
                 break;

@@ -80,5 +80,6 @@ $(function () {
     $( "#connect" ).click(function() { connect(); });
     $( "#disconnect" ).click(function() { disconnect(); });
     $( "#send" ).click(function() { sendMsg(); });
+    $( "#sendUser" ).text("Send to user: " + (3 - uid));
     $( "#sendUser" ).click(function() { sendUser(); });
 });
