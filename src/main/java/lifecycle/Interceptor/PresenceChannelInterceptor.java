@@ -1,6 +1,5 @@
 package lifecycle.Interceptor;
 
-import com.sun.security.auth.UserPrincipal;
 import lifecycle.auth.PortalPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +10,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
-
-import java.security.Principal;
 
 /**
  * Desc:

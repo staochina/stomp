@@ -46,7 +46,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         //设置客户端发送消息前缀；设置客户个人频道
         registry.setApplicationDestinationPrefixes("/app").setUserDestinationPrefix("/user/");
         //设置客户端接收广播主题前缀
-        registry.enableSimpleBroker("/topic","/queue");
+        registry.enableSimpleBroker("/topic");
 
 
     }

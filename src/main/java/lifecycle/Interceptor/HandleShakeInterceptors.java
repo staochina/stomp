@@ -36,8 +36,7 @@ public class HandleShakeInterceptors implements HandshakeInterceptor {
         Map<String, String[]> params = ((ServletServerHttpRequest) request).getServletRequest().getParameterMap();
 
         logger.debug("===================  HandleShakeInterceptors before " );
-        //保存客户端标识
-        //attributes.put("name", "8888");
+
         return true;
     }
 
