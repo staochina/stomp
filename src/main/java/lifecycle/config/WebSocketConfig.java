@@ -4,6 +4,7 @@ import lifecycle.Interceptor.HandleShakeInterceptors;
 import lifecycle.Interceptor.PresenceChannelInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -15,6 +16,9 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    @Value("${services.message-center.name}")
+    private String serviceName;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -26,19 +30,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
          * "/message-service"被注册为STOMP端点，对外暴露，客户端通过该路径接入WebSocket服务
          */
         logger.debug("---注册端点123456 ......");
-        registry.addEndpoint("/message-service").setAllowedOrigins("*")
-                .withSockJS().setInterceptors(new HandleShakeInterceptors());
-        /*registry.addEndpoint("/message-service").setAllowedOrigins("*")
-                .setHandshakeHandler(new STOMPHandshakeHandler()).
-                addInterceptors(new HandleShakeInterceptors()).withSockJS();*/
+        logger.debug("---message service name :"+serviceName);
+        registry.addEndpoint(serviceName).setAllowedOrigins("*")
+                .withSockJS();
+        // .setInterceptors(new HandleShakeInterceptors())  拦截器:客户端链接时对握手请求的拦截
     }
 
     /**
      * 配置消息代理
-     * 用户可以订阅来自"/topic"和"/user"的消息，
-     * 在Controller中，可通过@SendTo注解指明发送目标，这样服务器就可以将消息发送到订阅相关消息的客户端
-     * 使用topic来达到群发效果，使用user进行个人频道消息接收
-     * 客户端发送过来的消息，需要以"/app"为前缀，再经过Broker转发给响应的Controller
+     * 用户可以订阅来自"/topic"和"/user"的消息,
+     * 在Controller中,可通过@SendTo注解指明发送目标,这样服务器就可以将消息发送到订阅相关消息的客户端
+     * 使用topic来达到群发效果,使用user进行个人频道消息接收
+     * 客户端发送过来的消息,需要以"/app"为前缀,再经过Broker转发给响应的Controller
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {

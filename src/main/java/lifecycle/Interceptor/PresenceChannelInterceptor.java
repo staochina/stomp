@@ -36,7 +36,6 @@ public class PresenceChannelInterceptor implements ChannelInterceptor {
                 String name = accessor.getFirstNativeHeader("name");
                 logger.debug("--------- uidStr :" + uidStr);
                 int uid = Integer.parseInt(uidStr);
-                //Principal user = new UserPrincipal(String.valueOf(uid));
                 if (3 == uid) {
                     logger.debug("------- user 3 ...");
                     return null;
@@ -109,7 +108,7 @@ public class PresenceChannelInterceptor implements ChannelInterceptor {
                 break;
 
         }
-        //不是首次连接，已经成功登陆
+        //不是首次连接,已经成功登陆
         return message;
     }
 
@@ -125,7 +124,7 @@ public class PresenceChannelInterceptor implements ChannelInterceptor {
 
     @Override
     public boolean preReceive(MessageChannel channel) {
-        logger.debug(" ----  afterSendCompletion ()");
+        logger.debug(" ----  preReceive ()");
         return true;
     }
 
