@@ -1,5 +1,6 @@
-package lifecycle.utils;
+package lifecycle.RowMapperImpl;
 
+import lifecycle.utils.ObjectFormat;
 import org.json.JSONObject;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -81,7 +82,7 @@ public class JSONObjectRowMapper implements RowMapper<JSONObject> {
         if(obj instanceof java.sql.Clob) {
             obj=((java.sql.Clob)obj).getSubString(1, (int) ((java.sql.Clob)obj).length());
         }else if(obj instanceof java.util.Date){
-            obj=ObjectFormat.dateTimeSecondDashFormatter(obj);
+            obj= ObjectFormat.dateTimeSecondDashFormatter(obj);
         }
         return obj;
     }

@@ -1,9 +1,9 @@
 package lifecycle.config;
 
-import lifecycle.Interceptor.HandleShakeInterceptors;
 import lifecycle.Interceptor.PresenceChannelInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -16,10 +16,12 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Value("${services.message-center.name}")
     private String serviceName;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    PresenceChannelInterceptor presenceChannelInterceptor;
+
 
     /**
      * @param registry
@@ -33,7 +35,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         logger.debug("---message service name :"+serviceName);
         registry.addEndpoint(serviceName).setAllowedOrigins("*")
                 .withSockJS();
-        // .setInterceptors(new HandleShakeInterceptors())  拦截器:客户端链接时对握手请求的拦截
+        //registry.addEndpoint(serviceName).setAllowedOrigins("*").withSockJS().setInterceptors(new HandleShakeInterceptors()); // 拦截器:客户端链接时对握手请求的拦截
     }
 
     /**
@@ -49,9 +51,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         //设置客户端发送消息前缀；设置客户个人频道
         registry.setApplicationDestinationPrefixes("/app").setUserDestinationPrefix("/user/");
         //设置客户端接收广播主题前缀
-        registry.enableSimpleBroker("/topic");
-
-
+        registry.enableSimpleBroker("/queue");
     }
 
     /**
@@ -62,7 +62,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
         registry.setMessageSizeLimit(8192) //设置消息字节数大小
                 .setSendBufferSizeLimit(8192)//设置消息缓存大小
-                .setSendTimeLimit(10000); //设置消息发送时间限制毫秒
+                .setSendTimeLimit(1000); //设置消息发送时间限制毫秒
     }
 
     /**
@@ -73,7 +73,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registration.taskExecutor().corePoolSize(4) //设置消息输入通道的线程池线程数
                 .maxPoolSize(8)//最大线程数
                 .keepAliveSeconds(60);//线程活动时间
-        registration.setInterceptors(new PresenceChannelInterceptor());
+        registration.setInterceptors(presenceChannelInterceptor);
     }
 
     /**

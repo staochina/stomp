@@ -1,8 +1,12 @@
 package lifecycle.Interceptor;
 
-import lifecycle.auth.PortalPrincipal;
+import lifecycle.dao.impl.MessageDao;
+import lifecycle.model.AuthPrincipal;
+import lifecycle.service.AuthService;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -10,6 +14,9 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import javax.sql.DataSource;
 
 /**
  * Desc:
@@ -18,14 +25,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class PresenceChannelInterceptor implements ChannelInterceptor {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private AuthService authService;
+    @Autowired
+    private MessageDao messageDao;
+    @Autowired
+    DataSource dataSource;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        logger.debug(" ----  preSend () ");
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         //1. 判断是否首次连接请求
         StompCommand command = accessor.getCommand();
-        PortalPrincipal user =null;
+        AuthPrincipal user = null;
         switch (command) {
             case CONNECT:
                 logger.debug(" ---  CONNECT ");
@@ -33,91 +45,72 @@ public class PresenceChannelInterceptor implements ChannelInterceptor {
                 //String portalToken = accessor.getNativeHeader("portalToken").get(0);
                 //请求portal，验证tocken，并返回 用户相关信息
                 String uidStr = accessor.getFirstNativeHeader("uid");
-                String name = accessor.getFirstNativeHeader("name");
-                logger.debug("--------- uidStr :" + uidStr);
+                String userKey = accessor.getFirstNativeHeader("userKey");
                 int uid = Integer.parseInt(uidStr);
-                if (3 == uid) {
-                    logger.debug("------- user 3 ...");
-                    return null;
-                }
-                user = new PortalPrincipal(uid, name);
+                user = new AuthPrincipal();
+                user.setUid(Integer.parseInt(uidStr));
                 accessor.setUser(user);
-                logger.debug(" ----  设置 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
+                logger.debug(" ----  设置 user 对象 :" + ((AuthPrincipal) user).toJSON().toString());
                 break;
             case SUBSCRIBE:
                 logger.debug(" ----  SUBSCRIBE  ");
-                user =(PortalPrincipal) accessor.getUser();
-                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
+                user = (AuthPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((AuthPrincipal) user).toJSON().toString());
                 break;
             case UNSUBSCRIBE:
                 logger.debug(" ----  UNSUBSCRIBE  ");
-                user =(PortalPrincipal) accessor.getUser();
-                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
+                user = (AuthPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((AuthPrincipal) user).toJSON().toString());
                 break;
             case DISCONNECT:
                 logger.debug(" ----  DISCONNECT ");
-                user =(PortalPrincipal) accessor.getUser();
-                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
+                user = (AuthPrincipal) accessor.getUser();
+                logger.debug(" ----  获取 user 对象 :" + ((AuthPrincipal) user).toJSON().toString());
                 break;
             case ABORT:
                 logger.debug(" ----  ABORT ");
-                user =(PortalPrincipal) accessor.getUser();
-                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
+
                 break;
             case ACK:
                 logger.debug(" ----  ACK ");
-                user =(PortalPrincipal) accessor.getUser();
-                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
+
                 break;
             case NACK:
                 logger.debug(" ----  NACK ");
-                user =(PortalPrincipal) accessor.getUser();
-                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case SEND:
                 logger.debug(" ----  SEND ");
-                user =(PortalPrincipal) accessor.getUser();
-                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case BEGIN:
                 logger.debug(" ----  BEGIN ");
-                user =(PortalPrincipal) accessor.getUser();
-                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case ERROR:
                 logger.debug(" ----  ERROR ");
-                user =(PortalPrincipal) accessor.getUser();
-                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case STOMP:
                 logger.debug(" ----  STOMP ");
-                user =(PortalPrincipal) accessor.getUser();
-                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case MESSAGE:
                 logger.debug(" ----  MESSAGE ");
-                user =(PortalPrincipal) accessor.getUser();
-                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             case COMMIT:
                 logger.debug(" ----  COMMIT ");
-                user =(PortalPrincipal) accessor.getUser();
-                logger.debug(" ----  获取 user 对象 :" + ((PortalPrincipal) user).toJSON().toString());
                 break;
             default:
                 break;
 
         }
-        //不是首次连接,已经成功登陆
+        //已经成功登陆
         return message;
     }
 
-    @Override
+    /*@Override
     public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
         logger.debug(" ----  postSend () sent :" + sent);
-    }
+        logger.debug("  --  channel ");
+    }*/
 
-    @Override
+    /*@Override
     public void afterSendCompletion(Message<?> message, MessageChannel channel, boolean sent, Exception ex) {
         logger.debug(" ----  afterSendCompletion () sent :" + sent);
     }
@@ -126,9 +119,9 @@ public class PresenceChannelInterceptor implements ChannelInterceptor {
     public boolean preReceive(MessageChannel channel) {
         logger.debug(" ----  preReceive ()");
         return true;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public Message<?> postReceive(Message<?> message, MessageChannel channel) {
         logger.debug(" ----  postReceive ()");
         return message;
@@ -137,5 +130,21 @@ public class PresenceChannelInterceptor implements ChannelInterceptor {
     @Override
     public void afterReceiveCompletion(Message<?> message, MessageChannel channel, Exception ex) {
         logger.debug(" ----  afterReceiveCompletion ()");
+    }*/
+
+    /**
+     * 组装查询参数
+     *
+     * @param userKey 当前用户的sessionkey
+     * @param uid     当前用户的id
+     * @return
+     */
+    private JSONObject getAuthParams(String userKey, int uid) {
+        JSONObject authParam = new JSONObject();
+        authParam.put("cmd", "auth");
+        authParam.put("userKey", StringUtils.isEmpty(userKey) ? JSONObject.NULL : userKey);
+        authParam.put("uid", uid);
+        return authParam;
     }
+
 }

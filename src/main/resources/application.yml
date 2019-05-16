@@ -1,7 +1,7 @@
 #服务器
 server:
     #端口号
-    port: 8080
+    port: 9090
 #日志配置
 logging:
     #日志输出文件
@@ -9,16 +9,21 @@ logging:
     #级别
     level:
         lifecycle: DEBUG
+
 #数据库配置
 spring:
     profiles:
         active: product-windows
     datasource:
-        driver-class-name: oracle.jdbc.OracleDriver
-        url: jdbc:oracle:thin:@192.168.1.3:1521:orcl
-        username: semirfair_18s1s2
+        url: jdbc:oracle:thin:@192.168.1.7:1521:orcl
+        username: webapp
         password: tgbyhn624
+        driver-class-name: oracle.jdbc.OracleDriver
+
 #项目中各个服务的配置
 services:
     message-center:
-        name: "message-service"
+        name: message-service
+    #订货会用户信息查询
+    auth:
+        url: http://192.168.100.18:1866/servlets/binserv/Fair
